@@ -1,0 +1,775 @@
+{
+  "course": {
+    "title": "Golang 50 天高级学习计划",
+    "project": "GoTaskFlow",
+    "projectDescription": "一个从本地 CLI 任务队列逐步演进为生产级 HTTP 任务工作流平台的连续项目，覆盖 Go 语言机制、工程实践、并发、持久化、测试、性能、安全、可观测性、CI 与架构治理。",
+    "durationDays": 50,
+    "nodeSizeDays": 10,
+    "startDate": "2026-05-16",
+    "timezone": "Asia/Shanghai",
+    "schedule": "每天 12:00",
+    "requiredSections": [
+      "主题",
+      "学习重点",
+      "项目实践",
+      "核心理解",
+      "参考源"
+    ],
+    "notionPage": "https://www.notion.so/Golang-Plan-361bfc73ea1480b4a3d3fed58653ce45?source=copy_link",
+    "notionDatabase": "https://www.notion.so/d49f84e8f2f341dabe1cc911447e849a",
+    "notionDataSource": "collection://845d870f-9333-41e7-83cb-4b1427552bcb",
+    "githubRepo": "/Users/liushan/Documents/Codex/Golang-Learning"
+  },
+  "days": [
+    {
+      "day": 1,
+      "node": "节点 1",
+      "difficulty": "入门",
+      "topic": "Go 工程化环境与模块边界",
+      "focus": "Go toolchain、module、workspace、cmd/ 与 internal/ 分层、可执行程序入口",
+      "practice": "初始化连续项目 GoTaskFlow：一个本地任务队列与工作流引擎；建立仓库骨架、CLI 入口、基础 README",
+      "understanding": "Go 项目不是脚本集合，而是由模块路径、包边界、构建约束共同定义的工程系统。",
+      "reference": [
+        "https://go.dev/doc/install",
+        "https://go.dev/ref/mod",
+        "https://pkg.go.dev/cmd/go"
+      ],
+      "codeSlug": "module_layout"
+    },
+    {
+      "day": 2,
+      "node": "节点 1",
+      "difficulty": "进阶",
+      "topic": "类型系统、零值与领域建模",
+      "focus": "struct、method、value/pointer receiver、常量枚举、时间建模、领域不变量",
+      "practice": "设计 Job、Queue、Worker、JobStatus 等核心领域模型",
+      "understanding": "Go 的类型系统强调组合、显式状态和零值可用；好的领域模型先约束错误状态。",
+      "reference": [
+        "https://go.dev/ref/spec#Struct_types",
+        "https://go.dev/ref/spec#Method_declarations",
+        "https://go.dev/doc/effective_go#methods"
+      ],
+      "codeSlug": "domain_model"
+    },
+    {
+      "day": 3,
+      "node": "节点 1",
+      "difficulty": "进阶",
+      "topic": "Slice、Map 与内存语义",
+      "focus": "slice header、map 引用语义、容量扩展、逃逸分析初步、集合建模",
+      "practice": "实现内存版 Job Repository，支持创建、查询、按状态过滤任务",
+      "understanding": "Go 中值传递不等于深拷贝；理解底层表示才能写出可靠工程代码。",
+      "reference": [
+        "https://go.dev/blog/slices-intro",
+        "https://go.dev/ref/spec#Slice_types",
+        "https://go.dev/ref/spec#Map_types"
+      ],
+      "codeSlug": "inmemory_repository"
+    },
+    {
+      "day": 4,
+      "node": "节点 1",
+      "difficulty": "进阶",
+      "topic": "函数、方法与小接口设计",
+      "focus": "函数作为行为、隐式接口、consumer-side interface、依赖注入、包间契约",
+      "practice": "为任务服务层定义 JobRepository、IDGenerator、Clock 等接口并接入应用服务",
+      "understanding": "接口不是为了抽象一切，而是为了稳定调用方需求，隔离变化。",
+      "reference": [
+        "https://go.dev/doc/effective_go#interfaces_and_types",
+        "https://go.dev/wiki/CodeReviewComments#interfaces",
+        "https://go.dev/blog/package-names"
+      ],
+      "codeSlug": "small_interfaces"
+    },
+    {
+      "day": 5,
+      "node": "节点 1",
+      "difficulty": "进阶",
+      "topic": "错误模型与边界错误处理",
+      "focus": "error as value、sentinel error、custom error、errors.Is/As、错误包装",
+      "practice": "为任务创建、状态流转、查询失败设计错误体系，并在 CLI 层翻译为用户可读输出",
+      "understanding": "Go 错误处理的高级能力来自显式路径、可匹配语义和分层边界，而不是异常机制。",
+      "reference": [
+        "https://pkg.go.dev/errors",
+        "https://go.dev/blog/errors-are-values",
+        "https://go.dev/blog/go1.13-errors"
+      ],
+      "codeSlug": "error_boundaries"
+    },
+    {
+      "day": 6,
+      "node": "节点 1",
+      "difficulty": "高级",
+      "topic": "Context 与取消传播",
+      "focus": "context.Context、deadline、timeout、signal、取消传播、上下文边界",
+      "practice": "为 CLI 命令和服务层加入可取消执行；支持 Ctrl+C 中断任务调度流程",
+      "understanding": "context 是请求生命周期控制面，不是任意参数传递容器。",
+      "reference": [
+        "https://pkg.go.dev/context",
+        "https://go.dev/blog/context",
+        "https://pkg.go.dev/os/signal"
+      ],
+      "codeSlug": "context_cancellation"
+    },
+    {
+      "day": 7,
+      "node": "节点 1",
+      "difficulty": "高级",
+      "topic": "Goroutine、Channel 与 Select",
+      "focus": "goroutine 生命周期、channel 所有权、buffer、select、关闭协议",
+      "practice": "实现任务 Dispatcher 原型：提交任务、派发任务、worker 消费任务",
+      "understanding": "并发设计的核心不是开 goroutine，而是明确所有权、退出条件和背压。",
+      "reference": [
+        "https://go.dev/ref/spec#Go_statements",
+        "https://go.dev/ref/spec#Channel_types",
+        "https://go.dev/blog/codelab-share"
+      ],
+      "codeSlug": "dispatcher_channels"
+    },
+    {
+      "day": 8,
+      "node": "节点 1",
+      "difficulty": "高级",
+      "topic": "sync 包、数据竞争与内存可见性",
+      "focus": "sync.Mutex、RWMutex、WaitGroup、atomic 基础、race detector、happens-before",
+      "practice": "将内存 Repository 与 Dispatcher 改造成并发安全版本，并编写 race 测试",
+      "understanding": "并发正确性来自可证明的共享状态保护，而不是看起来不会冲突。",
+      "reference": [
+        "https://pkg.go.dev/sync",
+        "https://go.dev/ref/mem",
+        "https://go.dev/doc/articles/race_detector"
+      ],
+      "codeSlug": "race_safe_state"
+    },
+    {
+      "day": 9,
+      "node": "节点 1",
+      "difficulty": "高级",
+      "topic": "测试工程与行为契约",
+      "focus": "table-driven tests、subtests、fake、fixture、coverage、测试包组织",
+      "practice": "为领域模型、服务层、Repository、Dispatcher 建立第一批单元测试与集成测试",
+      "understanding": "高质量测试验证行为契约和边界条件，而不是复述实现细节。",
+      "reference": [
+        "https://pkg.go.dev/testing",
+        "https://go.dev/blog/subtests",
+        "https://go.dev/doc/build-cover"
+      ],
+      "codeSlug": "behavior_tests"
+    },
+    {
+      "day": 10,
+      "node": "节点 1",
+      "difficulty": "高级",
+      "topic": "节点 1 综合验收：本地任务队列 MVP",
+      "focus": "整合模块边界、领域模型、错误处理、context、并发安全、测试体系",
+      "practice": "完成 GoTaskFlow 本地 MVP：CLI 创建任务、列出任务、调度任务、worker 执行、测试通过",
+      "understanding": "第一个节点的目标是建立可演进的工程骨架，让后续 HTTP、持久化、并发调度和架构扩展都有稳定地基。",
+      "reference": [
+        "https://pkg.go.dev/cmd/go",
+        "https://go.dev/ref/mod",
+        "https://pkg.go.dev/testing"
+      ],
+      "codeSlug": "local_queue_mvp"
+    },
+    {
+      "day": 11,
+      "node": "节点 2",
+      "difficulty": "进阶",
+      "topic": "标准库 I/O 与分层持久化",
+      "focus": "io.Reader/Writer、文件系统抽象、序列化边界、Repository 替换策略",
+      "practice": "为 GoTaskFlow 增加 JSON 文件持久化，实现内存仓储与文件仓储可切换",
+      "understanding": "Go 标准库的 I/O 模型是一套组合式协议，工程价值来自稳定接口而不是具体存储。",
+      "reference": [
+        "https://pkg.go.dev/io",
+        "https://pkg.go.dev/os",
+        "https://pkg.go.dev/testing/fstest"
+      ],
+      "codeSlug": "file_persistence"
+    },
+    {
+      "day": 12,
+      "node": "节点 2",
+      "difficulty": "进阶",
+      "topic": "JSON、Tag 与数据契约演进",
+      "focus": "encoding/json、struct tag、omitempty、兼容性字段、DTO 与领域模型分离",
+      "practice": "为任务、执行记录、队列快照设计持久化 DTO，并支持版本字段",
+      "understanding": "外部数据格式是长期契约，不能直接把内部领域模型暴露成存储格式。",
+      "reference": [
+        "https://pkg.go.dev/encoding/json",
+        "https://go.dev/blog/json",
+        "https://go.dev/doc/modules/version-numbers"
+      ],
+      "codeSlug": "json_contracts"
+    },
+    {
+      "day": 13,
+      "node": "节点 2",
+      "difficulty": "进阶",
+      "topic": "CLI 工程化与命令边界",
+      "focus": "flag、子命令设计、输入校验、退出码、stdout/stderr 约定",
+      "practice": "扩展 CLI：add、list、run、retry、inspect、stats",
+      "understanding": "CLI 也是产品接口；清晰的命令语义和错误出口决定自动化可用性。",
+      "reference": [
+        "https://pkg.go.dev/flag",
+        "https://pkg.go.dev/os",
+        "https://go.dev/wiki/CodeReviewComments#command-line-interfaces"
+      ],
+      "codeSlug": "cli_commands"
+    },
+    {
+      "day": 14,
+      "node": "节点 2",
+      "difficulty": "进阶",
+      "topic": "配置系统与运行时参数",
+      "focus": "环境变量、配置文件、默认值、校验、配置优先级、不可变配置对象",
+      "practice": "增加 config 包，支持队列路径、worker 数量、超时时间、日志级别配置",
+      "understanding": "配置是运行时策略，不应散落在业务逻辑里；启动阶段完成解析和校验。",
+      "reference": [
+        "https://pkg.go.dev/os#LookupEnv",
+        "https://pkg.go.dev/flag",
+        "https://pkg.go.dev/cmd/go#hdr-Environment_variables"
+      ],
+      "codeSlug": "runtime_config"
+    },
+    {
+      "day": 15,
+      "node": "节点 2",
+      "difficulty": "进阶",
+      "topic": "日志、可观测性与结构化事件",
+      "focus": "log/slog、结构化日志、上下文字段、事件分类、调试与审计边界",
+      "practice": "为任务生命周期加入结构化日志：创建、入队、开始、成功、失败、重试",
+      "understanding": "日志不是打印字符串，而是系统运行事实的可查询事件流。",
+      "reference": [
+        "https://pkg.go.dev/log/slog",
+        "https://github.com/golang/go/issues/56345",
+        "https://go.dev/blog/slog"
+      ],
+      "codeSlug": "structured_logging"
+    },
+    {
+      "day": 16,
+      "node": "节点 2",
+      "difficulty": "高级",
+      "topic": "Worker Pool 与背压控制",
+      "focus": "worker pool、任务分发、buffer 策略、限流、优雅关闭、错误聚合",
+      "practice": "将 Dispatcher 升级为可配置 worker pool，支持队列容量与关闭等待",
+      "understanding": "并发系统要设计吞吐、背压和退出协议，否则负载越高越不可控。",
+      "reference": [
+        "https://go.dev/doc/effective_go#goroutines",
+        "https://go.dev/blog/pipelines",
+        "https://pkg.go.dev/sync"
+      ],
+      "codeSlug": "worker_pool"
+    },
+    {
+      "day": 17,
+      "node": "节点 2",
+      "difficulty": "高级",
+      "topic": "Retry、Timeout 与失败语义",
+      "focus": "重试策略、指数退避、幂等性、超时边界、失败分类、死信队列",
+      "practice": "为任务执行加入 retry policy、最大尝试次数、失败原因和 dead-letter 状态",
+      "understanding": "重试不是简单再执行；只有理解失败类型和幂等边界，系统才不会放大故障。",
+      "reference": [
+        "https://pkg.go.dev/context",
+        "https://pkg.go.dev/time",
+        "https://go.dev/blog/go1.13-errors"
+      ],
+      "codeSlug": "retry_policy"
+    },
+    {
+      "day": 18,
+      "node": "节点 2",
+      "difficulty": "高级",
+      "topic": "泛型与可复用基础设施",
+      "focus": "type parameter、constraint、泛型集合、泛型队列、避免过度抽象",
+      "practice": "抽取泛型安全队列、结果类型与分页工具，服务于任务查询和调度",
+      "understanding": "Go 泛型适合表达稳定的数据结构和算法，不适合替代接口建模业务行为。",
+      "reference": [
+        "https://go.dev/ref/spec#Type_parameters",
+        "https://go.dev/blog/intro-generics",
+        "https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md"
+      ],
+      "codeSlug": "generic_queue"
+    },
+    {
+      "day": 19,
+      "node": "节点 2",
+      "difficulty": "高级",
+      "topic": "包设计、内部 API 与可维护边界",
+      "focus": "internal、package cohesion、导出符号、包注释、循环依赖治理",
+      "practice": "重构项目包结构：internal/domain、app、storage、worker、cli",
+      "understanding": "Go 架构的第一道防线是包边界；好的包让错误依赖在编译期暴露。",
+      "reference": [
+        "https://go.dev/doc/go1.4#internalpackages",
+        "https://go.dev/blog/package-names",
+        "https://go.dev/doc/comment"
+      ],
+      "codeSlug": "package_boundaries"
+    },
+    {
+      "day": 20,
+      "node": "节点 2",
+      "difficulty": "高级",
+      "topic": "节点 2 综合验收：可持久化任务执行器",
+      "focus": "持久化、CLI、配置、结构化日志、worker pool、retry、包边界整合",
+      "practice": "完成 GoTaskFlow v0.2：支持文件持久化、并发执行、重试、配置、日志和状态检查",
+      "understanding": "第二个节点的目标是把原型推进为可运行工具，开始具备真实工程系统的生命周期管理能力。",
+      "reference": [
+        "https://go.dev/ref/mod",
+        "https://pkg.go.dev/cmd/go",
+        "https://go.dev/doc/effective_go"
+      ],
+      "codeSlug": "persistent_executor"
+    },
+    {
+      "day": 21,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "net/http 服务端工程模型",
+      "focus": "http.Server、Handler、ServeMux、路由边界、优雅启动与关闭",
+      "practice": "为 GoTaskFlow 增加 HTTP API 服务，提供任务创建、查询、执行触发接口",
+      "understanding": "Go HTTP 服务的核心是小而稳定的 Handler 协议，架构设计围绕边界组合展开。",
+      "reference": [
+        "https://pkg.go.dev/net/http",
+        "https://go.dev/doc/articles/wiki/",
+        "https://pkg.go.dev/context"
+      ],
+      "codeSlug": "http_server"
+    },
+    {
+      "day": 22,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "HTTP 契约、DTO 与请求校验",
+      "focus": "请求解析、响应结构、状态码语义、DTO、输入校验、API 版本前缀",
+      "practice": "设计 /api/v1/jobs 契约，实现 create/list/get/retry 的请求与响应模型",
+      "understanding": "API 是外部长期契约，领域模型、传输模型、错误模型必须清晰分离。",
+      "reference": [
+        "https://pkg.go.dev/net/http",
+        "https://pkg.go.dev/encoding/json",
+        "https://www.rfc-editor.org/rfc/rfc9110"
+      ],
+      "codeSlug": "http_contracts"
+    },
+    {
+      "day": 23,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "Middleware 与请求生命周期",
+      "focus": "middleware chain、request id、访问日志、panic recovery、timeout、context 注入",
+      "practice": "构建 HTTP middleware 栈，接入结构化日志、超时控制、panic 恢复和请求追踪",
+      "understanding": "Middleware 是横切关注点的边界层，不能污染领域服务，也不能吞掉关键错误。",
+      "reference": [
+        "https://pkg.go.dev/net/http",
+        "https://pkg.go.dev/context",
+        "https://pkg.go.dev/log/slog"
+      ],
+      "codeSlug": "http_middleware"
+    },
+    {
+      "day": 24,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "database/sql 与持久化适配器",
+      "focus": "database/sql、连接池、事务、SQL 扫描、Repository adapter、资源释放",
+      "practice": "将文件仓储升级为 SQLite 仓储，实现任务与执行记录的数据库持久化",
+      "understanding": "Go 的数据库层是接口驱动的低层协议，可靠性来自显式事务和资源生命周期管理。",
+      "reference": [
+        "https://go.dev/doc/database/",
+        "https://pkg.go.dev/database/sql",
+        "https://go.dev/doc/database/manage-connections"
+      ],
+      "codeSlug": "sql_repository"
+    },
+    {
+      "day": 25,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "Schema Migration 与数据演进",
+      "focus": "migration 版本、向前兼容、约束、索引、初始化流程、schema drift",
+      "practice": "增加 migration 机制，创建 jobs、attempts、dead_letters 表及核心索引",
+      "understanding": "数据库结构也是代码的一部分，必须可审计、可重复、可回滚地演进。",
+      "reference": [
+        "https://go.dev/doc/database/",
+        "https://www.sqlite.org/lang_createtable.html",
+        "https://www.sqlite.org/lang_altertable.html"
+      ],
+      "codeSlug": "schema_migrations"
+    },
+    {
+      "day": 26,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "事务边界与一致性设计",
+      "focus": "transaction script、并发更新、状态机约束、乐观锁、幂等写入",
+      "practice": "为任务状态流转加入事务保护，防止重复执行、错乱重试和并发覆盖",
+      "understanding": "一致性不是数据库自动赠送的，需要在业务状态机和事务边界中共同建模。",
+      "reference": [
+        "https://go.dev/doc/database/execute-transactions",
+        "https://pkg.go.dev/database/sql#Tx",
+        "https://www.sqlite.org/lang_transaction.html"
+      ],
+      "codeSlug": "transaction_state_machine"
+    },
+    {
+      "day": 27,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "HTTP 集成测试与测试服务器",
+      "focus": "httptest、测试数据库、fixture、端到端请求、状态码与响应断言",
+      "practice": "为 HTTP API 编写集成测试，覆盖任务创建、查询、执行、失败重试路径",
+      "understanding": "服务测试应该验证外部行为契约，同时让数据库、HTTP、应用服务协同暴露问题。",
+      "reference": [
+        "https://pkg.go.dev/net/http/httptest",
+        "https://pkg.go.dev/testing",
+        "https://go.dev/blog/subtests"
+      ],
+      "codeSlug": "http_integration_tests"
+    },
+    {
+      "day": 28,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "后台调度服务与进程内协调",
+      "focus": "background worker、service lifecycle、channel bridge、shutdown hook、错误上报",
+      "practice": "在 HTTP 服务中启动后台 worker pool，实现 API 提交任务、后台异步执行",
+      "understanding": "长生命周期服务要统一管理启动、运行、取消、排空和退出，避免孤立 goroutine。",
+      "reference": [
+        "https://pkg.go.dev/net/http#Server.Shutdown",
+        "https://go.dev/blog/context",
+        "https://go.dev/blog/pipelines"
+      ],
+      "codeSlug": "background_workers"
+    },
+    {
+      "day": 29,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "API 错误语义与可观测诊断",
+      "focus": "错误分类、problem response、日志关联、健康检查、ready/live 探针",
+      "practice": "增加统一错误响应、/healthz、/readyz、任务执行诊断接口",
+      "understanding": "工程系统需要让调用方和运维方都能理解失败，而不只是返回 500。",
+      "reference": [
+        "https://www.rfc-editor.org/rfc/rfc9457",
+        "https://pkg.go.dev/net/http",
+        "https://pkg.go.dev/log/slog"
+      ],
+      "codeSlug": "api_diagnostics"
+    },
+    {
+      "day": 30,
+      "node": "节点 3",
+      "difficulty": "高级",
+      "topic": "节点 3 综合验收：HTTP + SQLite 任务服务",
+      "focus": "HTTP API、SQLite、migration、事务、一致性、middleware、集成测试整合",
+      "practice": "完成 GoTaskFlow v0.3：可通过 HTTP 创建任务、持久化、异步执行、重试、查询状态",
+      "understanding": "第三个节点的目标是把本地工具升级为可服务化运行的后端系统，为后续分布式、性能和架构治理打基础。",
+      "reference": [
+        "https://pkg.go.dev/net/http",
+        "https://pkg.go.dev/database/sql",
+        "https://pkg.go.dev/net/http/httptest"
+      ],
+      "codeSlug": "http_sqlite_service"
+    },
+    {
+      "day": 31,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "深入并发模式与调度器模型",
+      "focus": "goroutine 调度、M:P:G 模型、阻塞点、work stealing、协作式抢占",
+      "practice": "为 GoTaskFlow 增加高并发任务压测入口，观察 worker 数量、队列长度与吞吐变化",
+      "understanding": "Go 并发的高级理解不止是语法，而是运行时调度、阻塞行为和系统资源之间的关系。",
+      "reference": [
+        "https://pkg.go.dev/runtime",
+        "https://go.dev/doc/diagnostics",
+        "https://go.dev/ref/mem"
+      ],
+      "codeSlug": "runtime_scheduler"
+    },
+    {
+      "day": 32,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "Pipeline、Fan-out/Fan-in 与取消治理",
+      "focus": "pipeline、fan-out/fan-in、done channel、context cancel、泄漏检测",
+      "practice": "将任务执行链改造成 pipeline：拉取、校验、执行、记录、通知分阶段处理",
+      "understanding": "并发流水线的关键是清晰的数据流、取消传播和 goroutine 生命周期收敛。",
+      "reference": [
+        "https://go.dev/blog/pipelines",
+        "https://go.dev/blog/context",
+        "https://pkg.go.dev/context"
+      ],
+      "codeSlug": "execution_pipeline"
+    },
+    {
+      "day": 33,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "限流、熔断与资源保护",
+      "focus": "token bucket、semaphore、rate limiter、bulkhead、过载保护",
+      "practice": "为任务执行器加入并发限额、队列容量限制和任务提交限流",
+      "understanding": "稳定系统不是无限接收请求，而是在资源边界内优雅拒绝和降级。",
+      "reference": [
+        "https://pkg.go.dev/golang.org/x/time/rate",
+        "https://pkg.go.dev/golang.org/x/sync/semaphore",
+        "https://pkg.go.dev/context"
+      ],
+      "codeSlug": "rate_limit_bulkhead"
+    },
+    {
+      "day": 34,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "Metrics 与运行时观测",
+      "focus": "runtime metrics、Prometheus 指标模型、counter/gauge/histogram、延迟分布",
+      "practice": "为 HTTP 服务增加 /metrics，暴露任务吞吐、失败率、执行耗时、队列深度",
+      "understanding": "可观测性不是事后补丁，而是系统行为模型的一部分。",
+      "reference": [
+        "https://pkg.go.dev/runtime/metrics",
+        "https://pkg.go.dev/expvar",
+        "https://prometheus.io/docs/concepts/metric_types/"
+      ],
+      "codeSlug": "metrics_endpoint"
+    },
+    {
+      "day": 35,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "Profiling 与性能诊断",
+      "focus": "pprof、CPU profile、heap profile、block profile、mutex profile、基准测试关联",
+      "practice": "为 GoTaskFlow 接入 pprof，定位高并发执行下的 CPU、内存和锁竞争热点",
+      "understanding": "性能优化必须先测量；profile 让猜测变成证据。",
+      "reference": [
+        "https://pkg.go.dev/net/http/pprof",
+        "https://pkg.go.dev/runtime/pprof",
+        "https://go.dev/doc/diagnostics"
+      ],
+      "codeSlug": "pprof_diagnostics"
+    },
+    {
+      "day": 36,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "Benchmark 与性能回归防护",
+      "focus": "testing.B、benchstat、allocation count、sub-benchmark、基准数据解释",
+      "practice": "为 Repository、Dispatcher、状态流转、HTTP handler 编写 benchmark",
+      "understanding": "Benchmark 的价值不是追求漂亮数字，而是建立可比较的性能契约。",
+      "reference": [
+        "https://pkg.go.dev/testing#hdr-Benchmarks",
+        "https://pkg.go.dev/golang.org/x/perf/cmd/benchstat",
+        "https://go.dev/blog/pprof"
+      ],
+      "codeSlug": "benchmarks"
+    },
+    {
+      "day": 37,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "内存管理与 GC 调优",
+      "focus": "escape analysis、allocation、GC pacing、对象复用、sync.Pool 使用边界",
+      "practice": "优化任务执行路径中的热点分配，并用 benchmark 验证收益",
+      "understanding": "Go 的内存优化应优先减少不必要分配，而不是盲目控制 GC。",
+      "reference": [
+        "https://go.dev/doc/gc-guide",
+        "https://pkg.go.dev/sync#Pool",
+        "https://pkg.go.dev/cmd/compile"
+      ],
+      "codeSlug": "gc_allocation_tuning"
+    },
+    {
+      "day": 38,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "分布式任务语义与幂等设计",
+      "focus": "at-least-once、at-most-once、exactly-once 幻觉、幂等键、重复消费",
+      "practice": "为任务执行加入 idempotency key、执行去重表和重复请求保护",
+      "understanding": "分布式系统里只执行一次通常是业务语义，不是基础设施保证。",
+      "reference": [
+        "https://www.rfc-editor.org/rfc/rfc9110#name-idempotent-methods",
+        "https://www.rfc-editor.org/rfc/rfc9562",
+        "https://go.dev/doc/database/execute-transactions"
+      ],
+      "codeSlug": "idempotent_execution"
+    },
+    {
+      "day": 39,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "外部依赖、超时与弹性调用",
+      "focus": "HTTP client、timeout、retry budget、circuit breaker、依赖隔离",
+      "practice": "增加任务类型：调用外部 Webhook，并实现超时、重试预算和失败隔离",
+      "understanding": "系统可靠性取决于最慢和最不稳定的依赖，边界必须主动防护。",
+      "reference": [
+        "https://pkg.go.dev/net/http#Client",
+        "https://pkg.go.dev/context",
+        "https://pkg.go.dev/golang.org/x/time/rate"
+      ],
+      "codeSlug": "webhook_resilience"
+    },
+    {
+      "day": 40,
+      "node": "节点 4",
+      "difficulty": "高级",
+      "topic": "节点 4 综合验收：高并发可观测任务平台",
+      "focus": "并发模式、限流、metrics、pprof、benchmark、GC、幂等、弹性调用整合",
+      "practice": "完成 GoTaskFlow v0.4：支持高并发执行、指标观测、性能分析、幂等保护和外部 Webhook 任务",
+      "understanding": "第四个节点的目标是把服务从能运行推进到可诊断、可压测、可保护、可优化的生产级后端系统。",
+      "reference": [
+        "https://go.dev/doc/diagnostics",
+        "https://go.dev/doc/gc-guide",
+        "https://pkg.go.dev/net/http/pprof"
+      ],
+      "codeSlug": "observable_concurrent_platform"
+    },
+    {
+      "day": 41,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "架构重构与端口适配器",
+      "focus": "Clean Architecture、Hexagonal Architecture、依赖方向、应用服务边界、适配器隔离",
+      "practice": "将 GoTaskFlow 重构为 domain、app、ports、adapters 分层结构",
+      "understanding": "架构的核心不是目录命名，而是让业务规则不依赖外部技术细节。",
+      "reference": [
+        "https://go.dev/doc/go1.4#internalpackages",
+        "https://go.dev/blog/package-names",
+        "https://go.dev/wiki/CodeReviewComments"
+      ],
+      "codeSlug": "ports_adapters"
+    },
+    {
+      "day": 42,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "API 契约治理与版本演进",
+      "focus": "OpenAPI、兼容性策略、分页、过滤、错误契约、版本废弃策略",
+      "practice": "为 HTTP API 输出 OpenAPI 规格，并补齐分页、过滤、稳定错误码",
+      "understanding": "成熟 API 要能被独立理解、测试、演进，而不是依赖调用方阅读源码。",
+      "reference": [
+        "https://spec.openapis.org/oas/latest.html",
+        "https://www.rfc-editor.org/rfc/rfc9110",
+        "https://www.rfc-editor.org/rfc/rfc9457"
+      ],
+      "codeSlug": "openapi_contract"
+    },
+    {
+      "day": 43,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "安全边界与权限模型",
+      "focus": "Token 认证、最小权限、输入净化、敏感日志治理、基础威胁建模",
+      "practice": "增加 API Token 认证、任务级权限校验、敏感字段脱敏日志",
+      "understanding": "安全不是最后加一道门，而是贯穿输入、权限、日志和错误输出的系统边界。",
+      "reference": [
+        "https://go.dev/doc/security/",
+        "https://go.dev/doc/security/vuln/",
+        "https://pkg.go.dev/crypto/subtle"
+      ],
+      "codeSlug": "security_boundaries"
+    },
+    {
+      "day": 44,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "分布式追踪与请求关联",
+      "focus": "OpenTelemetry、trace/span、context propagation、日志与指标关联",
+      "practice": "为任务创建、调度、执行、Webhook 调用接入 tracing，并串联 request id",
+      "understanding": "生产系统需要跨边界还原因果链，trace 让一次请求的生命周期可被解释。",
+      "reference": [
+        "https://opentelemetry.io/docs/languages/go/",
+        "https://opentelemetry.io/docs/languages/go/getting-started/",
+        "https://www.w3.org/TR/trace-context/"
+      ],
+      "codeSlug": "distributed_tracing"
+    },
+    {
+      "day": 45,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "构建、发布与容器化",
+      "focus": "go build、ldflags、交叉编译、Docker multi-stage build、配置注入",
+      "practice": "为 GoTaskFlow 增加 Makefile、版本信息、Dockerfile 和本地容器运行方式",
+      "understanding": "Go 的发布优势来自静态二进制和清晰构建链，但仍需要可重复的工程流程。",
+      "reference": [
+        "https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies",
+        "https://pkg.go.dev/cmd/link",
+        "https://docs.docker.com/language/golang/"
+      ],
+      "codeSlug": "release_build"
+    },
+    {
+      "day": 46,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "CI 质量门禁与供应链安全",
+      "focus": "go test、race、vet、staticcheck、govulncheck、依赖审计、CI pipeline",
+      "practice": "配置 GitHub Actions：测试、race、lint、漏洞扫描、构建镜像",
+      "understanding": "工程质量不能依赖人工记忆，要把关键风险固化为自动化门禁。",
+      "reference": [
+        "https://go.dev/doc/security/vuln/",
+        "https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck",
+        "https://docs.github.com/actions"
+      ],
+      "codeSlug": "ci_quality_gates"
+    },
+    {
+      "day": 47,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "高级测试：Fuzz、契约与端到端",
+      "focus": "fuzz testing、contract test、golden file、E2E、测试金字塔治理",
+      "practice": "为任务状态机、HTTP 契约、Webhook 任务加入 fuzz、契约测试和端到端测试",
+      "understanding": "高级测试关注系统不变量和外部契约，帮助发现普通样例覆盖不到的风险。",
+      "reference": [
+        "https://go.dev/doc/security/fuzz/",
+        "https://pkg.go.dev/testing#hdr-Fuzzing",
+        "https://pkg.go.dev/net/http/httptest"
+      ],
+      "codeSlug": "advanced_testing"
+    },
+    {
+      "day": 48,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "工作流编排与 DAG 执行模型",
+      "focus": "DAG、依赖任务、拓扑排序、失败传播、补偿策略、调度语义",
+      "practice": "将单任务队列扩展为 workflow：任务可声明依赖，按 DAG 顺序执行",
+      "understanding": "任务平台的高级能力来自对依赖关系、失败传播和执行语义的显式建模。",
+      "reference": [
+        "https://go.dev/ref/spec#Map_types",
+        "https://pkg.go.dev/container/list",
+        "https://go.dev/blog/pipelines"
+      ],
+      "codeSlug": "dag_workflows"
+    },
+    {
+      "day": 49,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "生产可运维性与故障演练",
+      "focus": "runbook、SLO、告警信号、备份恢复、灰度发布、故障注入",
+      "practice": "编写运维手册，加入数据库备份命令、恢复流程、关键告警指标和故障演练脚本",
+      "understanding": "可运维系统不仅要能部署，还要能在故障中被诊断、恢复和持续改进。",
+      "reference": [
+        "https://sre.google/workbook/alerting-on-slos/",
+        "https://sre.google/sre-book/monitoring-distributed-systems/",
+        "https://go.dev/doc/diagnostics"
+      ],
+      "codeSlug": "operability_runbook"
+    },
+    {
+      "day": 50,
+      "node": "节点 5",
+      "difficulty": "架构级",
+      "topic": "最终验收：生产级 Go 任务工作流平台",
+      "focus": "架构、API、安全、可观测、CI、测试、容器化、DAG 工作流完整整合",
+      "practice": "完成 GoTaskFlow v1.0：一个具备 HTTP API、SQLite、并发执行、幂等、DAG、观测与 CI 的任务工作流平台",
+      "understanding": "50 天的最终目标是掌握 Go 从语言机制到生产系统的完整工程闭环。",
+      "reference": [
+        "https://go.dev/doc/effective_go",
+        "https://go.dev/doc/diagnostics",
+        "https://go.dev/ref/mod"
+      ],
+      "codeSlug": "production_workflow_platform"
+    }
+  ]
+}
